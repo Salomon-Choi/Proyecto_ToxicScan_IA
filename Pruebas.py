@@ -26,12 +26,14 @@ for post in top_posts:
 post = reddit.submission(url="https://www.reddit.com/r/Honduras/comments/1833ojr/personas_a_las_que_les_han_prohibido_entrar_a/")
 
 comments = post.comments
+palabras_removidas = ['[removed]','[deleted]']
 comentarios = []
 
 for comment in comments[:2]:
     print("Imprimiendo comentario...")
     print("Cuerpo del comentario - ",comment.body)
-    comentarios.append(str(comment.body))
+    if ((str(comment.body)) not in palabras_removidas ):
+        comentarios.append(str(comment.body))
 
 
 print(comentarios)
