@@ -35,5 +35,6 @@ for comment in comments[:2]:
     if ((str(comment.body)) not in palabras_removidas ):
         comentarios.append(str(comment.body))
 
-
+df = pd.DataFrame(comentarios)
+df.to_csv('ListaDeComentarios.csv',index=True)
 print(comentarios)
