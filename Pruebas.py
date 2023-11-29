@@ -7,31 +7,27 @@ reddit = praw.Reddit(client_id = open('client_id.txt').read(),              # id
                       password = open('password.txt').read(),)              # contraseña usuario reddit
 
 subreddit = reddit.subreddit('python')
+palabras_removidas = ['[removido]','[eliminado]']
 
-top_posts = subreddit.top(limit=10)
+top_posts = subreddit.top(limit=15)
 new_posts = subreddit.new(limit=5)
 
-for post in top_posts:
-    print("Titulo - ", post.title )
-    print("ID - ", post.id )
-    print("Autohor - ", post.author )
-    print("URL - ", post.url )
-    print("Score - ", post.score )
-    print("Comment count - ", post.num_comments )
-    print("Created - ", post.created_utc )
-    print("\n")
-
-post = reddit.submission(url="https://www.reddit.com/r/Honduras/comments/1833ojr/personas_a_las_que_les_han_prohibido_entrar_a/")
-
-comments = post.comments
-palabras_removidas = ['[removed]','[deleted]']
 comentarios = []
 
-for comment in comments[:2]:
-    print("Imprimiendo comentario...")
-    print("Cuerpo del comentario - ",comment.body)
-    if ((str(comment.body)) not in palabras_removidas ):
-        comentarios.append(str(comment.body))
+for post in top_posts:
+    # print("Titulo - ", post.title )
+    print("ID - ", post.id )
+    post = reddit.submission(id=post.id)
+    comments = post.comments
+    for comment in comments[:5]:
+        if ((str(comment.body)) not in palabras_removidas ):
+            comentarios.append(str(comment.body))
+    # print("Autohor - ", post.author )
+    # print("URL - ", post.url )
+    # print("Score - ", post.score )
+    # print("Comment count - ", post.num_comments )
+    # print("Created - ", post.created_utc )
+    # print("\n")
 
 
 df = pd.DataFrame(comentarios,columns=['comentarios'])
