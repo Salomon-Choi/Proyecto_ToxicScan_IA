@@ -1,6 +1,4 @@
 import praw, datetime, requests, json, time, numpy as np, pandas as pd
-import tensorflow
-
 
 reddit = praw.Reddit(client_id = open('client_id.txt').read(),              # id cliente
                       client_secret = open('client_secret.txt').read(),     # secret cliente
@@ -35,6 +33,6 @@ for comment in comments[:2]:
     if ((str(comment.body)) not in palabras_removidas ):
         comentarios.append(str(comment.body))
 
-df = pd.DataFrame(comentarios)
-df.to_csv('ListaDeComentarios.csv',index=True)
-print(comentarios)
+
+df = pd.DataFrame(comentarios,columns=['comentarios'])
+df.to_csv('ListaDeComentarios.csv',index=False)
