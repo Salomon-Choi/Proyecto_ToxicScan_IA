@@ -1,7 +1,7 @@
 // IMPORTANTE: el fs es nativo de las librerias de Node pero hay que instalar el csvtojson usando:
 // npm install --save csvtojson@latest
 
-// Importar dependencias para leer el csv
+// Importar dependencias para leer el csv¿
 const fs = require("fs");
 const csv = require("csvtojson");
 
@@ -22,28 +22,26 @@ let lista = [];
       // agregar a la lista
       lista.push(comenString)
     })
-    console.log(lista)
+    //Implementando el modelo Toxicity Classifier
+
+    //importar el modelo de tensorflow
+
+
+    require('@tensorflow/tfjs');
+    const toxicity = require('@tensorflow-models/toxicity');
+
+
+    // //Estableciendo el threshold
+    const threshold = 0.9;
+
+
+    // //Cargamos el modelo 
+
+    toxicity.load(threshold).then(model => {
+      const sentences = ['you suck'];
+
+      model.classify(sentences).then(predictions => {
+        console.log(...predictions); 
+        })
+      })
 })();
-
-
-//Implementando el modelo Toxicity Classifier
-
-//importar el modelo de tensorflow
-
-require('@tensorflow/tfjs');
-const toxicity = require('@tensorflow-models/toxicity');
-
-
-//Estableciendo el threshold
-const threshold = 0.9;
-
-
-//Cargamos el modelo 
-
-toxicity.load(threshold).then(model => {
-  const sentences = ['ListaDeComentarios.csv'];
-
-  model.classify(sentences).then(predictions => {
-    console.log(predictions); 
-    })
-  })
