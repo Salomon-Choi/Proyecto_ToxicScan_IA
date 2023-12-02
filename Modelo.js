@@ -32,16 +32,23 @@ let lista = [];
 
 
     // //Estableciendo el threshold
-    const threshold = 0.9;
+    const threshold = 0.8;
 
 
     // //Cargamos el modelo 
 
     toxicity.load(threshold).then(model => {
-      const sentences = ['you suck'];
+      const sentences = ['son of a bitch, jewish fuck'];
 
       model.classify(sentences).then(predictions => {
-        console.log(...predictions); 
+
+        predictions = predictions.map(predictions => ({
+          label: predictions['label'],
+          probabilitie: predictions.results[0]['probabilities'][1],
+          match: predictions.results[0]['match']
+        }))
+        console.log(predictions); 
         })
       })
 })();
+
