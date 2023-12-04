@@ -41,8 +41,8 @@ let lista = [];
 /////////////////////////////////Clasificador de toxicidad/////////////////////////////////////////////////////////
 
     toxicity.load(threshold).then(model => {
-      const sentences = ['Fuck you, jewish cunt']; // pa pruebas que si funciona con malas palabras (solo ingles)
-      // sentences.push(lista); //esta parte es para que ingrese el String de los comentarios en el array
+      const sentences = []; // pa pruebas que si funciona con malas palabras (solo ingles)
+      sentences.push(lista); //esta parte es para que ingrese el String de los comentarios en el array
       // console.log(sentences); // solo lo agregue para ver como imprimia el array
       model.classify(sentences).then(predictions => {
 
@@ -67,54 +67,54 @@ let lista = [];
           // se imprimre en cual categoria podriamos incluir este posible texto toxico
           console.log("This piece of text might fall into this categories: ",predictions)
           categoria= "This piece of text might fall into this categories: "+predictions
+          //////////////////////   MODELO DE ANÁLISIS DE TEXTO //////////////////////
+
+          const express = require('express');
+          require('dotenv').config()
+          const app = express();
+          //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+          const {
+              TextServiceClient
+          } = require("@google-ai/generativelanguage");
+          const {
+              GoogleAuth
+          } = require("google-auth-library");
+          //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+          const API_KEY = process.env.API_KEY;
+          //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+          const client = new TextServiceClient({
+              authClient: new GoogleAuth().fromAPIKey(API_KEY),
+          });
+          //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+          const promptString = `This sub-reddit might contain this type of verbal violence: ${predictions.toString()}, and talk about how this type of language can affect people`;
+          //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+          client.generateText({
+              model: 'models/text-bison-001',
+              temperature: 0.7,
+              candidateCount: 1,
+              top_k: 40,
+              top_p: 0.95,
+              max_output_tokens: 1024,
+              stop_sequences: [],
+              prompt: {
+                  text: promptString,
+              },
+          }).then(result => {
+              result.forEach(function(d1) {
+                  if (d1 != null) {
+                      d1.candidates.forEach(function(d2) {
+                          console.log(d2.output);
+                      })
+                  }
+              })
+          });
         }
         })
       })
-
-////////////////////////////////////////   MODELO DE ANÁLISIS DE TEXTO //////////////////////////////////////////////////////////
-
-const express = require('express');
-require('dotenv').config()
-const app = express();
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-const {
-    TextServiceClient
-} = require("@google-ai/generativelanguage");
-const {
-    GoogleAuth
-} = require("google-auth-library");
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-const API_KEY = process.env.API_KEY;
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-const client = new TextServiceClient({
-    authClient: new GoogleAuth().fromAPIKey(API_KEY),
-});
-//++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-const promptString = "Talk about toxicity on the internet and give an opinion on the following sentence: This piece of text might fall into this categories:  [ 'insult' ]";
-//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-client.generateText({
-    model: 'models/text-bison-001',
-    temperature: 0.7,
-    candidateCount: 1,
-    top_k: 40,
-    top_p: 0.95,
-    max_output_tokens: 1024,
-    stop_sequences: [],
-    prompt: {
-        text: promptString,
-    },
-}).then(result => {
-    result.forEach(function(d1) {
-        if (d1 != null) {
-            d1.candidates.forEach(function(d2) {
-                console.log(d2.output);
-            })
-        }
-    })
-});
 
 })();
 
 // $ yarn add @tensorflow/tfjs @tensorflow-models/toxicity
 //////////////////////////////////////////////////
 ///////////////////////
+
