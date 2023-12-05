@@ -4,11 +4,18 @@
 // Importar dependencias para leer el csv¿
 const fs = require("fs");
 const csv = require("csvtojson");
+const express = require("express")
+
+const app = express()
+const port = 3000
 
 // crear una variable global de tipo lista para guardar los comentarios
 let lista = '';
-
-(async () => {
+app.get('/resultados',(req,res)=>{
+  res.status(200).send('<h1>Hola desde resultados</h1>')
+})
+app.get('/', (req,res)=>{
+  (async () => {
     // re iniciar la lista vacia
     lista = '';
     // Cargar los comentarios
@@ -39,8 +46,8 @@ let lista = '';
 /////////////////////////////////Clasificador de toxicidad/////////////////////////////////////////////////////////
 
     toxicity.load(threshold).then(model => {
-      const sentences = []; // pa pruebas que si funciona con malas palabras (solo ingles)
-      sentences.push(lista); //esta parte es para que ingrese el String de los comentarios en el array
+      const sentences = ['son of a bitch, you are everything I was talking about']; // pa pruebas que si funciona con malas palabras (solo ingles)
+      // sentences.push(lista); //esta parte es para que ingrese el String de los comentarios en el array
       // console.log(sentences); // solo lo agregue para ver como imprimia el array
       model.classify(sentences).then(predictions => {
 
@@ -55,6 +62,7 @@ let lista = '';
         if (predictions.length == 0){
           // si no cae en ninguna categoria entonces probablemente no es toxico
           console.log("probably not toxic")
+          res.status(200).send('<p>Probably not toxic</p>')
         }else{
           // se verifica que la palabra toxicidad este incluida (aunque es redundante)
           if (predictions.includes('toxicity')){
@@ -63,8 +71,10 @@ let lista = '';
             predictions.pop(predictions.length -1)
           }
           // se imprimre en cual categoria podriamos incluir este posible texto toxico
+          const predic = predictions.toString()
+          // res.status(200).send('<p>Toxicity: TRUE</p>')
+          res.status(200).send(`<p>Toxicity: TRUE</p><br><p>This piece of text might fall into these categories: ${predic}</p>`)
           console.log("This piece of text might fall into this categories: ",predictions)
-
 
           //////////////////////   MODELO DE ANÁLISIS DE TEXTO //////////////////////
 
@@ -114,6 +124,11 @@ let lista = '';
       })
 
 })();
+})
+
+app.listen(port, ()=>{
+  console.log(`Server is running on port http://localhost:${port}`)
+})
 
 // $ yarn add @tensorflow/tfjs @tensorflow-models/toxicity
 //////////////////////////////////////////////////
