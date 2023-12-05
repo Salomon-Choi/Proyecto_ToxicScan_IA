@@ -5,10 +5,8 @@
 const fs = require("fs");
 const csv = require("csvtojson");
 
-let categoria
-
 // crear una variable global de tipo lista para guardar los comentarios
-let lista = [];
+let lista = '';
 
 (async () => {
     // re iniciar la lista vacia
@@ -66,7 +64,8 @@ let lista = [];
           }
           // se imprimre en cual categoria podriamos incluir este posible texto toxico
           console.log("This piece of text might fall into this categories: ",predictions)
-          categoria= "This piece of text might fall into this categories: "+predictions
+
+
           //////////////////////   MODELO DE ANÁLISIS DE TEXTO //////////////////////
 
           const express = require('express');
@@ -86,7 +85,8 @@ let lista = [];
               authClient: new GoogleAuth().fromAPIKey(API_KEY),
           });
           //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-          const promptString = `This sub-reddit might contain this type of verbal violence: ${predictions.toString()}, and talk about how this type of language can affect people`;
+          const promptString = `Can you define the following terms: ${predictions.toString()} and could you talk about how this type of language can affect people?`;
+          console.log(promptString);
           //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
           client.generateText({
               model: 'models/text-bison-001',
@@ -100,6 +100,7 @@ let lista = [];
                   text: promptString,
               },
           }).then(result => {
+             console.log('siuuu');
               result.forEach(function(d1) {
                   if (d1 != null) {
                       d1.candidates.forEach(function(d2) {
