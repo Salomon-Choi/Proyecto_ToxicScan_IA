@@ -29,7 +29,7 @@ reddit = praw.Reddit(
     password=open('password.txt').read(),             # contraseña usuario reddit
 )
 
-subreddit = reddit.subreddit('AskReddit')             #Nombre de subreddit del que se extraen datos
+subreddit = reddit.subreddit('gaming')             #Nombre de subreddit del que se extraen datos
 palabras_removidas = ['[removido]', '[eliminado]']
 
 top_posts = subreddit.top(limit=1)                    #Limitar la cantidad de post 
