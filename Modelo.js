@@ -73,7 +73,7 @@ app.get('/', (req,res)=>{
           // se imprimre en cual categoria podriamos incluir este posible texto toxico
           const predic = predictions.toString()
           // res.status(200).send('<p>Toxicity: TRUE</p>')
-          res.status(200).send(`<p>Toxicity: TRUE</p><br><p>This piece of text might fall into these categories: ${predic}</p>`)
+         /////////////////// res.status(200).send(`<p>Toxicity: TRUE</p><br><p>This piece of text might fall into these categories: ${predic}</p>`)
           console.log("This piece of text might fall into this categories: ",predictions)
 
           //////////////////////   MODELO DE ANÁLISIS DE TEXTO //////////////////////
@@ -95,7 +95,7 @@ app.get('/', (req,res)=>{
               authClient: new GoogleAuth().fromAPIKey(API_KEY),
           });
           //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-          const promptString = `Can you define the following terms: ${predictions.toString()} and could you talk about how this type of language can affect people?`;
+          const promptString = `Could you define the following terms: ${predictions.toString()}, and provide a summary of how to prevent this behavior on the internet?`;
           console.log(promptString);
           //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
           client.generateText({
@@ -110,11 +110,117 @@ app.get('/', (req,res)=>{
                   text: promptString,
               },
           }).then(result => {
-             console.log('siuuu');
+            // console.log('siuuu');
               result.forEach(function(d1) {
                   if (d1 != null) {
                       d1.candidates.forEach(function(d2) {
                           console.log(d2.output);
+                          res.status(200).send(`
+                          <!DOCTYPE html>
+                          <html lang="en">
+                          <head>
+                              <meta charset="UTF-8">
+                              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                              <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+                              <title>ToxicScan</title>
+                          </head>
+                          <body>
+                              <style>
+                                  body {
+                                      font-family: Arial, sans-serif;
+                                  }
+                                  .card-header{
+                                      background-color: #6ab7d5;
+                                      color: #f5f5f3;
+                                      font-weight: bold;
+                                  }
+                          
+                                  .center-image {
+                                      display: block;
+                                      margin-left: auto;
+                                      margin-right: auto;
+                                      padding: 3rem;
+                                  }
+                          
+                                  .blockquote-footer{
+                                      background-color: #979797;
+                                      color: #f5f5f3;
+                                      font-weight: bold;
+                                  }
+                          
+                                  .navbar-brand {
+                              display: flex;
+                              align-items: center;
+                            }
+                                  .navbar-brand img {
+                                  vertical-align: middle;
+                                  margin-right: 10px; /* Ajusta este valor según sea necesario */
+                              }
+                          
+                              .navbar-brand span {
+                                  vertical-align: middle;
+                                  display: inline-block;
+                                  font-size: 180%;
+                                  background-color:#ff4500;
+                                  color: #f5f5f3;
+                                  border-radius: 0.5rem;
+                                  padding: 0.5rem;
+                               }
+                          
+                               footer {
+                                position: relative;
+                                text-align: center;
+                              }
+                          
+                              footer img {
+                                width: 100%;
+                                max-height: 200px;
+                                display: block;
+                                margin: 0 auto;
+                                transform: rotate(180deg);  
+                              }
+                          
+                              p{
+                                  background-color:#f5f5f3;
+                                  margin: 2rem;
+                              }
+                          
+                                </style>
+                          
+                                <nav class="navbar bg-body-tertiary">
+                                  <div class="container-fluid">
+                                    <a class="navbar-brand" href="#">
+                                      <img src="https://cdn.worldvectorlogo.com/logos/reddit-logo-new.svg" alt="Logo" width="15%" height="15%" class="d-inline-block align-text-top">
+                                      <span>ToxicScan</span>
+                                    </a>
+                                  </div>
+                                </nav>
+                          
+                          
+                                <div class="card">
+                                  <div class="card-header">
+                                      Toxicity: TRUE
+                                  </div>
+                                  <div class="card-body">
+                                    <blockquote class="blockquote mb-0">
+                                      <p>${d2.output}</p>
+                                      <footer class="blockquote-footer">This piece of text might fall into these categories: ${predic}<cite title="Source Title">. 💀</cite></footer>
+                                    </blockquote>
+                                  </div>
+                                </div>
+                                <img src="https://www.shutterstock.com/image-illustration/toxicity-quality-degree-being-toxic-250nw-2223347193.jpg" alt="" class="center-image ">
+                                <footer>
+                                  <img src="https://media.istockphoto.com/id/1338139079/vi/vec-to/nh%E1%BB%8F-gi%E1%BB%8Dt-d%E1%BA%A7u-n%C6%B0%E1%BB%9Bc-s%E1%BB%91t-ho%E1%BA%B7c-s%C6%A1n-%C4%91%C6%B0%E1%BB%A3c-c%C3%B4-l%E1%BA%ADp-tr%C3%AAn-n%E1%BB%81n-tr%E1%BA%AFng-ch%E1%BA%A5t-nh%E1%BB%9Dn-%C4%91en-nh%E1%BB%8F-gi%E1%BB%8Dt-tr%C3%AAn-n%E1%BB%81n.jpg?s=170667a&w=0&k=20&c=uLMBB1w5fXkuPY8CJwbabxOgVgMFQKbmFwtyq2GXCvU=" alt="">
+                                </footer>
+                                <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+                              
+                           
+                          </body>
+                          </html>
+
+
+
+`)
                       })
                   }
               })
@@ -134,3 +240,26 @@ app.listen(port, ()=>{
 //////////////////////////////////////////////////
 ///////////////////////
 
+{/* <style>
+p {
+  font-family: Arial, sans-serif;
+  margin-bottom: 10px;
+}
+
+p.toxic {
+  color: red;
+  font-weight: bold;
+}
+
+p.categories {
+  font-style: italic;
+}
+
+p.output {
+  color: green;
+}
+</style>
+
+<p class="toxic">Toxicity: TRUE</p>
+<p class="categories">This piece of text might fall into these categories: ${predic}</p>
+<p class="output">${d2.output}</p> */}
