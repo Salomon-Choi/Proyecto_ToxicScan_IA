@@ -46,7 +46,8 @@ app.get('/', (req,res)=>{
 /////////////////////////////////Clasificador de toxicidad/////////////////////////////////////////////////////////
 
     toxicity.load(threshold).then(model => {
-      const sentences = ['son of a bitch, you are everything I was talking about']; // pa pruebas que si funciona con malas palabras (solo ingles)
+      //const sentences = ['son of a bitch, you are everything I was talking about']; // pa pruebas que si funciona con malas palabras (solo ingles)
+     const sentences = [lista];
       // sentences.push(lista); //esta parte es para que ingrese el String de los comentarios en el array
       // console.log(sentences); // solo lo agregue para ver como imprimia el array
       model.classify(sentences).then(predictions => {
@@ -95,7 +96,9 @@ app.get('/', (req,res)=>{
               authClient: new GoogleAuth().fromAPIKey(API_KEY),
           });
           //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-          const promptString = `Could you define the following terms: ${predictions.toString()}, and provide a summary of how to prevent this behavior on the internet?`;
+          //const promptString = `Could you define the following terms: ${predictions.toString()}, and how to prevent to happens again`;
+          //const promptString=`Could you define the following terms: ${predictions.toString()} and how we could prevent that`  
+          const promptString=`Could you explain the following terms: ${predictions.toString()}? and find a way to mitigate them? `                      
           console.log(promptString);
           //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
           client.generateText({

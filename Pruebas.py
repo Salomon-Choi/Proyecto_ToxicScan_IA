@@ -28,8 +28,14 @@ reddit = praw.Reddit(
     username=open('username.txt').read(),             # nombre usuario reddit
     password=open('password.txt').read(),             # contraseña usuario reddit
 )
-
-subreddit = reddit.subreddit('gaming')             #Nombre de subreddit del que se extraen datos
+#subreddit = reddit.subreddit('AskReddit')
+#subreddit = reddit.subreddit('sex')
+#subreddit = reddit.subreddit('FemaleDatingStrategy')      
+#subreddit = reddit.subreddit('gaming')
+# subreddit = reddit.subreddit('politics')
+#subreddit = reddit.subreddit('lgbt')   
+#subreddit = reddit.subreddit('news')
+subreddit = reddit.subreddit('nba')             #Nombre de subreddit del que se extraen datos
 palabras_removidas = ['[removido]', '[eliminado]']
 
 top_posts = subreddit.top(limit=1)                    #Limitar la cantidad de post 
